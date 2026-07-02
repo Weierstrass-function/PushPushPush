@@ -111,14 +111,11 @@ docker compose restart
 ## Настройка ip для приложения Android
 
 Необходимо зайти в следующие файлы и изменить следующие строки:
-
-TechStudio\app\src\main\java\com\techstudio\app\MainActivity.kt
+- TechStudio\app\src\main\java\com\techstudio\app\MainActivity.kt
 `webView.loadUrl("ip.адрес.вашего.хоста")`
-
-TechStudio\app\src\main\java\com\techstudio\app\MyFirebaseMessagingService.kt
+- TechStudio\app\src\main\java\com\techstudio\app\MyFirebaseMessagingService.kt
 `val url = "https://ip.адрес.вашего.хоста/api/save-fcm-token"`
-
-TechStudio\app\src\main\res\xml\network_security_config.xml
+- TechStudio\app\src\main\res\xml\network_security_config.xml
 `<domain includeSubdomains="true">ip.адрес.вашего.хоста</domain>`
 
 Далее необходимо собрать APK
