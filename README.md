@@ -79,6 +79,11 @@ mkcert ip.адрес.вашего.хоста
 ip.адрес.вашего.хоста.pem -> selfsigned.crt
 ip.адрес.вашего.хоста-key.pem -> selfsigned.key
 
+Далее не забудьте выполнить
+```
+docker compose restart
+```
+
 ## Установка на Android 
 
 Переместите файл C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\AppData\Local\mkcert\rootCA.pem на ваш телефон.
