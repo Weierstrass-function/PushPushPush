@@ -88,6 +88,8 @@ docker compose restart
 
 <img width="232" height="95" alt="image" src="https://github.com/user-attachments/assets/9f36dd40-b693-49b2-b387-67929c830751" />
 
+<img width="203" height="100" alt="image" src="https://github.com/user-attachments/assets/1481e060-7cb5-4940-80cb-e83fa60ee788" />
+
 ## Установка на Android 
 
 Переместите файл C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\AppData\Local\mkcert\rootCA.pem на ваш телефон.
