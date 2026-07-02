@@ -110,7 +110,7 @@ docker compose restart
 
 ## Настройка ip для приложения Android
 
-Необъодимо зайти в следующие файлы и изменить следующие строки:
+Необходимо зайти в следующие файлы и изменить следующие строки:
 
 TechStudio\app\src\main\java\com\techstudio\app\MainActivity.kt
 `webView.loadUrl("ip.адрес.вашего.хоста")`
