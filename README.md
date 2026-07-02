@@ -46,9 +46,37 @@ ipconfig
 
 <img width="451" height="65" alt="image" src="https://github.com/user-attachments/assets/33b433d5-cb7d-4546-a042-46ab2e08bb8d" />
 
-Псоле чего выполните
+После чего выполните
 ```
 docker compose exec app php artisan config:clear
 ```
+
+## Создание SSL сертификата
+
+Дальше есть одна маленькая скромная проблема браузеры очень не любят service workers от мутных ресурсов с неправильными сертификатами, поэтому если хотите протестировать на нескольких устройствах в своей локальной сети необходимо создать сертификат для ip вашего хоста на машину, где вы запускаете докер нужно поставить маленькую утилитку. Если Windows
+```
+winget install mkcert
+```
+
+<img width="1063" height="375" alt="image" src="https://github.com/user-attachments/assets/924d4e9c-43d1-4637-a743-fccb7f688206" />
+
+Перезапустить терминал
+
+<img width="1063" height="174" alt="image" src="https://github.com/user-attachments/assets/fba28e04-843d-4d47-b5bf-127d46e3de91" />
+
+Установить локальный сертификат CA в доверенное хранилище вашей системы
+для этого выполнить команду 
+```
+mkcert -install
+```
+Перейти в папку tech_studio\ssl
+
+Создать сертификат для ip вашего локального сервера
+```
+mkcert ip.адрес.вашего.хоста
+```
+После переименуйте получившиеся файлы 
+ip.адрес.вашего.хоста.pem -> selfsigned.crt
+ip.адрес.вашего.хоста-key.pem -> selfsigned.key
 
 
