@@ -84,6 +84,10 @@ ip.адрес.вашего.хоста-key.pem -> selfsigned.key
 docker compose restart
 ```
 
+ЕСЛИ НА ТЕКУЗИЙ МОМЕНТ ВСЕ СДЕЛАНО ПРАВИЛЬНО ВЫ УВИДИТЕ ПРИ ВБИВАНИИ В ПОИСКОВОЙ СТРОКЕ ip вашего локального сервера на нем же желанный замочек
+
+<img width="232" height="95" alt="image" src="https://github.com/user-attachments/assets/9f36dd40-b693-49b2-b387-67929c830751" />
+
 ## Установка на Android 
 
 Переместите файл C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\AppData\Local\mkcert\rootCA.pem на ваш телефон.
