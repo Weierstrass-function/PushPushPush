@@ -79,4 +79,42 @@ mkcert ip.адрес.вашего.хоста
 ip.адрес.вашего.хоста.pem -> selfsigned.crt
 ip.адрес.вашего.хоста-key.pem -> selfsigned.key
 
+## Установка на Android 
+
+Переместите файл C:\Users\ВАШЕ_ИМЯ_ПОЛЬЗОВАТЕЛЯ\AppData\Local\mkcert\rootCA.pem на ваш телефон.
+
+Далее в настройках:
+
+<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/d1b07b5b-c7be-47a0-8f0b-fef75caf8640" />
+
+<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/d82a8326-1170-448d-9fed-344f24be6b74" />
+
+<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/0fa70124-2a60-4ebf-8f5a-431bdb311cac" />
+
+<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/aa7ee7e4-c614-4750-8217-9b28b911f5e6" />
+
+Если все верно вы увидите надпись
+
+<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/21f406d4-db29-4730-a6eb-4cd4a987a57e" />
+
+## Настройка ip для приложения Android
+
+Необъодимо зайти в следующие файлы и изменить следующие строки:
+
+TechStudio\app\src\main\java\com\techstudio\app\MainActivity.kt
+`webView.loadUrl("ip.адрес.вашего.хоста")`
+
+TechStudio\app\src\main\java\com\techstudio\app\MainActivity.kt
+`val url = "https://ip.адрес.вашего.хоста/api/save-fcm-token"`
+
+TechStudio\app\src\main\res\xml\network_security_config.xml
+`<domain includeSubdomains="true">ip.адрес.вашего.хоста</domain>`
+
+Далее необходимо собрать APK
+
+<img width="542" height="288" alt="image" src="https://github.com/user-attachments/assets/64817b94-923a-449d-9be9-220fe47aa9cd" />
+
+После чего можно приступать к тестированию уведомлений на android.
+
+
 
