@@ -87,6 +87,24 @@ Push уведомления в web не обладают достаточной 
 
 Данная функция премечательна тем, что он вызывается сам когда приложение получает новый FCM-токен от плагина, например при первом запуске. Нам остается просто его сохранить в долговременной памяти и передать на сервер.
 
+А паьриаеи это за счет вот этого (возвращаемся в мнифест):
+```
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+```
+Это договор с Android:
+
+Что-то типа: «Если придёт событие com.google.firebase.MESSAGING_EVENT — запусти MyFirebaseMessagingService».
+
+Firebase/Google Play Services как раз шлёт такие intent'ы, когда:
+- пришёл новый FCM-токен → вызовется onNewToken()
+- пришло push-сообщение → вызвался бы onMessageReceived() (да если вы хотите обрабатывать эти уведомления внутри приложения стоит отметить что и этот метод вы можете переопределить)
+
 Важно сказать что этот плагин должен быть как бы подключен при сборке, это происходит в TechStudio\build.gradle.kts кроме того он нуждается в файле TechStudio\app\google-services.json
 
 Чтобы получить google-services.json
