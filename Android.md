@@ -43,12 +43,65 @@ Push уведомления в web не обладают достаточной 
 ```
 Т.е. преходим в
 ## MainActivity
-А конкретно в onCreate
+
+Проблема: чтобы отправить FCM токен на сервер надо подтвердить, что пользователь вошел в аккаунт. На web все это скрывают от нас различные механизмы Loravel. Тут же нам придется в ручном режиме отправлять токен авторизации (далее auth token или bearer токен).
+
+А конкретно в onCreate нам наиболее интересны:
 - `MyFirebaseMessagingService.loadToken(this)` Тут мы загружаем из долговременной памяти FCM токен (а то вдруг он у нас уже получен), ну вернее скрываем это действие за этим методом.
-- Дальше техенические действия по 
+- `webView.settings.javaScriptEnabled = true` для setAuthToken (стр. 77)
+- `webView.addJavascriptInterface(this, "Android")` чтобы сам сайт мог дернуть setAuthToken так называемый JS-мост, собственно дает на web в файле LoginPage.vue вызвать ее `window.Android.setAuthToken(token);` (стр. 93)
+- собственно после этого вызова мы попадем в
+   ```
+   @JavascriptInterface
+    fun setAuthToken(token: String) {
+        authToken = token
+        android.util.Log.d("AUTH", "Received token from WebView: $token")
 
-Если опустить чисто технические детали функционал сведется к:
-- Открывает https://10.240.222.1
-- Даёт сайту мост в Android: метод Android.setAuthToken(token)
+        // Как только мы получили авторизацию, отправляем FCM-токен на сервер,
+        // чтобы привязать устройство к пользователю.
+        MyFirebaseMessagingService.sendTokenToServer()
+    }
+  ```
+В котором мы записываем Berarer token в переменную authToken
+И главное вызываем MyFirebaseMessagingService.sendTokenToServer()
 
-Если смотреть по ходу то по сути у вас дергается onCreate
+## MyFirebaseMessagingService.kt
+Содержит
+- Методы для работы с долговременной памятью через SharedPreferences для хранения fcm токена
+- sendTokenToserver единственная задача всего большого и страшного кода в котором просто собрать и отправить корректный http запрос и отправить его, кроме того тут можно реализовать обработку ошибок.
+
+Но собственно откуда же берется FCM-токен?
+
+В самом низу вы найдете маленькую переопределенную функцию из firebase
+```
+    override fun onNewToken(token: String) {
+        Log.d("FCM", "New FCM token: $token")
+
+        // Сохраняем токен в долговременную память
+        saveToken(applicationContext, token)
+
+        // Отправляем на сервер (асинхронно)
+        sendTokenToServer()
+    }
+```
+
+Данная функция премечательна тем, что он вызывается сам когда приложение получает новый FCM-токен от плагина, например при первом запуске. Нам остается просто его сохранить в долговременной памяти и передать на сервер.
+
+Важно сказать что этот плагин должен быть как бы подключен при сборке, это происходит в TechStudio\build.gradle.kts кроме того он нуждается в файле TechStudio\app\google-services.json
+
+Чтобы получить google-services.json
+В созданном проекте в console.firebase.google.com
+
+<img width="729" height="289" alt="image" src="https://github.com/user-attachments/assets/a2f366d2-2192-4cd6-acf3-d44328140cbf" />
+
+Пролистайте вниз и нажмите
+
+<img width="166" height="144" alt="image" src="https://github.com/user-attachments/assets/6fcb67c2-30f3-4819-abb1-d2950810df9c" />
+
+Введите ваши данные
+
+<img width="527" height="809" alt="image" src="https://github.com/user-attachments/assets/24070dd7-c79e-44e4-8536-fa06ab03b081" />
+
+Теперь необходимый файл будет доступен для скачивания
+
+<img width="441" height="185" alt="image" src="https://github.com/user-attachments/assets/f3df21c6-9df4-430d-8e10-875ea0ccf96d" />
