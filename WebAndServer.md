@@ -9,7 +9,7 @@
   		- <img width="356" height="181" alt="image" src="https://github.com/user-attachments/assets/620b083a-fac9-4381-beec-6bd10c92829a" />
 		- Вы получите что-то такое:
 		- <img width="466" height="160" alt="image" src="https://github.com/user-attachments/assets/ec7037f3-7787-497a-a747-a0904248439c" />
-		- Остается преименовть в `firebase-key.json` и закинуть сюда: `storage\app\private\firebase-key.json`
+		- Остается преименовать в `firebase-key.json` и закинуть сюда: `storage\app\private\firebase-key.json`
   - Кроме того тут возникала ошибка свзи с сверерами firebase, поэтому необходимо в docker compose в блок `app` добавить:
   - ```
     dns:
