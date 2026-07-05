@@ -3,7 +3,7 @@
 - Тупо скопировать `app/Services/FcmService.php` Данный файл принимает массив FCM-токенов, тему и тело уведомления, собирает под формат принимаемый библеотекой Kreait и передает на сервера Firebase с использованием библиотеки при этом используя `app/private/firebase-key.json` именно данный файл ваш ключ от firebase как для отправителя уведомлений. Кроме того принимает ответ от серверов Firebase и возвращает в `NotificationController.php` различные списки токенов, с которыеми что-то не так.
 - _Да в этом и есть вся прелесть использования Firebase он сам контролирует их жизненный цикл вам не надо ловить логауты (хотя в целом эта опция бывает полезна) и прочие нюансы жизненного цикла FCM токенов это делают сами сервисы Firebase и возвращают вам соответствующие ошибки"._
 	- Для его работы надо установить данную библиотеку например так: `composer require kreait/laravel-firebase`
- 	- файл `firebase-key.json` следует получить в https://console.firebase.google.com/
+ 	- Кроме того необходим файл `firebase-key.json` следует получить в https://console.firebase.google.com/
   		- <img width="730" height="325" alt="image" src="https://github.com/user-attachments/assets/3056bc8e-d08f-4c17-be66-8c2e1d105f22" />
 		- прокрутите вниз
   		- <img width="356" height="181" alt="image" src="https://github.com/user-attachments/assets/620b083a-fac9-4381-beec-6bd10c92829a" />
