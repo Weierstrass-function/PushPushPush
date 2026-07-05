@@ -34,7 +34,6 @@ composer require kreait/laravel-firebase
 ``
 
 # Что нужно
-- Firebase JS `npm install firebase`
 - `composer show kreait/laravel-firebase`
 
 # Web Client
@@ -45,8 +44,18 @@ composer require kreait/laravel-firebase
 
 # Так что делать?
 ## Тупо скопировать:
-- app/Services/FcmService.php
-- app/Http/Controllers/API/NotificationController.php
+- `app/Services/FcmService.php` Принимает массив FCM-токенов, тему и тело уведомления, собирает под формат принимаемый библеотекой Kreait и передает на сервера Firebase с использованием библиотеки при этом используя `app/private/firebase-key.json` именно данный файл ваш ключ от firebase как для отправителя уведомлений. Кроме того принимает ответ от серверов Firebase и возвращает в `NotificationController.php` различные списки токенов, с которыеми что-то.
+- _Да в этом и есть вся прелесть использования Firebase он сам контролирует их жизненный цикл вам не надо ловить логауты (хотя в целом эта опция бывает полезна) и прочие нюансы жизненного цикла FCM токенов это делает сами сервисы Firebase возвращают вам соответствующие ошибки если вы пытаетесь обратится к токенам, которые уже "мертвы"._
+	- Для его работы надо установить данную библиотеку например так: `composer require kreait/laravel-firebase`
+ 	- файл `firebase-key.json` следует получить в https://console.firebase.google.com/
+  		- <img width="730" height="325" alt="image" src="https://github.com/user-attachments/assets/3056bc8e-d08f-4c17-be66-8c2e1d105f22" />
+		- прокрутите вниз
+  		- <img width="356" height="181" alt="image" src="https://github.com/user-attachments/assets/620b083a-fac9-4381-beec-6bd10c92829a" />
+		- Вы получите что-то такое:
+		- <img width="466" height="160" alt="image" src="https://github.com/user-attachments/assets/ec7037f3-7787-497a-a747-a0904248439c" />
+		- Остается преименовть в `firebase-key.json` и закинуть сюда: `storage\app\private\firebase-key.json`
+
+- Продолжаем копировать файлы `app/Http/Controllers/API/NotificationController.php` вызывается через через роуты принимает в качестве запросы сожержащие массив id пользователей, заголовок уведомления и сам текст уведомления. Далее
 - app/Models/NotificationClient.php
 - database/migrations/2026_06_26_080845_create_notification_client_table.php
 - resources/js/firebase.ts
@@ -112,8 +121,16 @@ messaging.onBackgroundMessage((payload) => {
 });
 ```
 
+Важно!!! Не путайте с messaging, который
+```
+class FcmService
+{
+    protected $messaging;
+```
+в app\Services\FcmService.php
 
-### `resources/js/Pages/AdminPage.vue` (если нужна админка)
+
+### `resources/js/Pages/AdminPage.vue`
 
 Кнопка «Уведомить» + диалог + `sendNotification()` → `POST /api/admin/notify-users`.  
 Это **~50 строк** из AdminPage, не весь файл.
