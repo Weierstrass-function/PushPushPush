@@ -100,3 +100,65 @@
       		- возьмите конфиг, который вы использовали для service-worker и поместите его еще и в данный файл
         - `messenging` и все что с ним связано чисто технический код для нормальной для того чтобы самой библиотеке понять что вот тут мы работаем с таким-то конкретным конфигом.
 **Итог:** переносится **~7 файлов ядра** + **правки в 3–4 существующих** (routes, login, опционально admin, nginx) + **зависимости и секреты из Firebase Console**. Остальное проекта — не про уведомления.
+- В файл `resources\js\Pages\AdminPage.vue` в блок `<template v-if="activeEntity?.crud" #start>` необходимо вставить:
+- ```
+  <Button label="Уведомить" class="mr-2" variant="outlined" @click="notificationDialog" :disabled="!selectedData || !selectedData.length" />
+  ```
+- Добавить диалог после всех существующих Dialog перед `</dev>` такого вида:
+- ```
+	<Dialog v-model:visible="notifyDialog" :style="{ width: '450px' }" header="Отправить уведомление" :modal="true">
+	    <div class="flex flex-col gap-4">
+	        <div>
+	            <label class="block mb-1">Заголовок</label>
+	            <InputText v-model="notifyTitle" class="w-full" placeholder="Введите заголовок" />
+	        </div>
+	        <div>
+	            <label class="block mb-1">Сообщение</label>
+	            <InputText v-model="notifyMessage" class="w-full" placeholder="Введите текст уведомления" />
+	        </div>
+	        <div class="text-sm text-gray-500">
+	            Выбрано пользователей: {{ selectedData?.length }}
+	        </div>
+	    </div>
+	    <template #footer>
+	        <Button label="Отмена" icon="pi pi-times" text @click="notifyDialog = false" />
+	        <Button label="Отправить" icon="pi pi-send" :loading="notifyLoading" @click="sendNotification" />
+	    </template>
+	</Dialog>
+  ```
+  - В блоке Script рядом с остальными ref добавить:
+  - ```
+  	const notifyDialog = ref(false)
+	const notifyTitle = ref('')
+	const notifyMessage = ref('')
+	const notifyLoading = ref(false)
+  	```
+  - Добавить функции можно в конец блока методов:
+  - ```
+	const notificationDialog = () => {
+	    notifyTitle.value = ''
+	    notifyMessage.value = ''
+	    notifyDialog.value = true
+	}
+	
+	const sendNotification = async () => {
+	    if (!selectedData.value?.length) return
+	
+	    notifyLoading.value = true
+	    try {
+	        const ids = selectedData.value.map(u => u.id)
+	
+	        await axios.post('/api/admin/notify-users', {
+	            user_ids: ids,
+	            title: notifyTitle.value,
+	            message: notifyMessage.value,
+	        })
+	
+	        notifyDialog.value = false
+	    } catch (err) {
+	        console.error('Ошибка отправки уведомления:', err)
+	    } finally {
+	        notifyLoading.value = false
+	    }
+	}
+    ```
