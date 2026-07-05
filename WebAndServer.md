@@ -22,3 +22,34 @@
 3. собственно само уведомление как ни странно требуется
 4. Кроме того необходимо чтобы клиент был готов принимать уведомления.
 
+# FcmService.php
+Для использования
+```
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+```
+Необходимо 
+``
+composer require kreait/laravel-firebase
+``
+
+# Что нужно
+- Firebase JS `npm install firebase`
+- 
+
+# Web Client
+Его задачи в этой системе:
+- Решить все вопросы регистрации Service Worker, разрешения на уведомления в браузере
+
+---
+# Так что делать?
+## Тупо скопировать:
+- app/Services/FcmService.php
+- app/Http/Controllers/API/NotificationController.php
+- app/Models/NotificationClient.php
+- database/migrations/2026_06_26_080845_create_notification_client_table.php
+- resources/js/firebase.ts
+- resources/js/fcm.ts
+- public/firebase-messaging-sw.js
+## Умно скопировать:
+- resources/js/firebase.ts 
