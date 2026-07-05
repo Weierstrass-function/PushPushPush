@@ -43,9 +43,9 @@ composer require kreait/laravel-firebase
 ---
 
 # Так что делать?
-## Тупо скопировать:
-- `app/Services/FcmService.php` Принимает массив FCM-токенов, тему и тело уведомления, собирает под формат принимаемый библеотекой Kreait и передает на сервера Firebase с использованием библиотеки при этом используя `app/private/firebase-key.json` именно данный файл ваш ключ от firebase как для отправителя уведомлений. Кроме того принимает ответ от серверов Firebase и возвращает в `NotificationController.php` различные списки токенов, с которыеми что-то.
-- _Да в этом и есть вся прелесть использования Firebase он сам контролирует их жизненный цикл вам не надо ловить логауты (хотя в целом эта опция бывает полезна) и прочие нюансы жизненного цикла FCM токенов это делает сами сервисы Firebase возвращают вам соответствующие ошибки если вы пытаетесь обратится к токенам, которые уже "мертвы"._
+## Backend:
+- Тупо скопировать `app/Services/FcmService.php` Принимает массив FCM-токенов, тему и тело уведомления, собирает под формат принимаемый библеотекой Kreait и передает на сервера Firebase с использованием библиотеки при этом используя `app/private/firebase-key.json` именно данный файл ваш ключ от firebase как для отправителя уведомлений. Кроме того принимает ответ от серверов Firebase и возвращает в `NotificationController.php` различные списки токенов, с которыеми что-то.
+- _Да в этом и есть вся прелесть использования Firebase он сам контролирует их жизненный цикл вам не надо ловить логауты (хотя в целом эта опция бывает полезна) и прочие нюансы жизненного цикла FCM токенов это делает сами сервисы Firebase и возвращают вам соответствующие ошибки"._
 	- Для его работы надо установить данную библиотеку например так: `composer require kreait/laravel-firebase`
  	- файл `firebase-key.json` следует получить в https://console.firebase.google.com/
   		- <img width="730" height="325" alt="image" src="https://github.com/user-attachments/assets/3056bc8e-d08f-4c17-be66-8c2e1d105f22" />
@@ -55,10 +55,20 @@ composer require kreait/laravel-firebase
 		- <img width="466" height="160" alt="image" src="https://github.com/user-attachments/assets/ec7037f3-7787-497a-a747-a0904248439c" />
 		- Остается преименовть в `firebase-key.json` и закинуть сюда: `storage\app\private\firebase-key.json`
 
-- Продолжаем копировать файлы `app/Http/Controllers/API/NotificationController.php` вызывается через через роуты принимает в качестве запросы сожержащие массив id пользователей, заголовок уведомления и сам текст уведомления. Далее
-- app/Models/NotificationClient.php
-- database/migrations/2026_06_26_080845_create_notification_client_table.php
-- resources/js/firebase.ts
+- Продолжаем тупо копировать файлы `app/Http/Controllers/API/NotificationController.php` вызывается через через роуты принимает в качестве запроса массив id пользователей, заголовок уведомления и сам текст уведомления. Далее находит соответствующие данным пользователям записи в базе данных используя модель `NotificationClient`. Затем по данным из возврата из fcm->sendToTokens удаляет все неактуальные токены из базы. А еще я понял что не смогу простить если оставлю вам в api.php ту гадость, поэтому во время написания я еще раз отрефакторил код и теперь saveFcmToken который принимает собственно сам FCM токен и название платформы, которые помещает в базу данных, кроме того тут обрабатывается данная возможная ошибка, если вы ее еще помните:
+	- <img width="660" height="306" alt="image" src="https://github.com/user-attachments/assets/892f826c-adba-46ba-9cb0-0b7546cec914" />
+
+- Далее копируем `app/Models/NotificationClient.php`, который содержит описание упомянутой модели связывая их с реальной таблицей `notification_clients` механизмами Illuminate, штатными для предоставленного проекта.
+- Копируем `database/migrations/2026_06_26_080845_create_notification_client_table.php`, который строит упомянутую таблицу. Вроде тут тоже нет ничего особо интересного для данного разбора.
+
+## API:
+- Внезапно НЕ копируем, а открываем `routes/api.php`, нужно иметь возможность по роутам дергать функции добавленного контроллера, необходимо добавить:
+	- `Route::post('/save-fcm-token', [NotificationController::class, 'saveFcmToken']);` в блоке `Route::middleware('auth:sanctum')` чтобы убедится, что пользователь отправляющий нам токен все же прошел аутентификацию.
+ 	- `Route::post('/notify-users', [NotificationController::class, 'notifyUsers']);` в блок `Route::prefix('admin')`
+
+
+
+- `resources/js/firebase.ts`
 - resources/js/fcm.ts
 - public/firebase-messaging-sw.js
 ## Скопировать, но изменить данные:
