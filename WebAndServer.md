@@ -66,6 +66,7 @@ composer require kreait/laravel-firebase
 	- `Route::post('/save-fcm-token', [NotificationController::class, 'saveFcmToken']);` в блоке `Route::middleware('auth:sanctum')` чтобы убедится, что пользователь отправляющий нам токен все же прошел аутентификацию.
  	- `Route::post('/notify-users', [NotificationController::class, 'notifyUsers']);` в блок `Route::prefix('admin')`
 
+## Frontend:
 
 
 - `resources/js/firebase.ts`
